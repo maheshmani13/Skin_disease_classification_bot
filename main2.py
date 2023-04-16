@@ -1,13 +1,15 @@
 import logging
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import requests
-import joblib
 import numpy as np
+import joblib
 import tensorflow
+import os 
+import PIL.Image as Image
+import base64
+from io import BytesIO
 
-
-
-
+import io
 # Set up logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
@@ -21,7 +23,6 @@ def start(update, context):
 def help(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text='Helo!I am a Bot created by team ExploringGeeks i use Artifical Intelligence to classify your skin disease')
 
-
 # Create a function to handle user messages
 def detect_allergy(update, context):
     # Check if the message contains an image
@@ -34,7 +35,10 @@ def detect_allergy(update, context):
         file = context.bot.getFile(file_id)
         image_url = file.file_path
         image = requests.get(image_url).content
-
+        image = Image.open(BytesIO(image))
+        
+  
+        
         # Perform skin allergy detection on the image (replace this with your own detection logic)
         # ... (your allergy detection code here)
         # result = your_allergy_detection_function(image)
@@ -68,6 +72,7 @@ def detect_allergy(update, context):
 
         # Send the result to the user
         context.bot.send_message(chat_id=update.effective_chat.id, text=f'Allergy detected:' + disease)
+
     else:
         # If the message doesn't contain an image, prompt the user to send an image
         context.bot.send_message(chat_id=update.effective_chat.id, text='Please send me an image to detect allergies.')
